@@ -1,0 +1,73 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+link='https://github.com/EvansDataScience/VisualAnalytics_2_tabularData/raw/master/data/eduwa.rda'
+
+#getting the data TABLE from the file in the cloud:
+load(file=url(link))
+```
+
+```{r}
+table(eduwa$LocaleType,exclude = 'nothing')
+absoluteT=table(eduwa$LocaleType,exclude = 'nothing')
+prop.table(absoluteT)
+```
+
+```{r}
+ToPlot=prop.table(absoluteT)
+pie(ToPlot)
+```
+```{r}
+names(ToPlot)
+```
+
+```{r}
+names(ToPlot)[5]='Unknown'
+```
+
+```{r}
+ToPlot = ToPlot*100
+
+paste0(round(ToPlot,2),'%')
+```
+```{r}
+ToPlot*1000
+tableFreq=as.data.frame(ToPlot)
+names(tableFreq)=c("locale","frequency")
+
+tableFreq$locale <- factor(tableFreq$locale, levels = tableFreq$locale[order(-tableFreq$frequency)]) #Stuff Quinn entered to sort it out 
+
+tableFreq
+```
+
+```{r}
+library(ggplot2)
+base= ggplot(data = tableFreq, aes(x = locale, y = frequency))
+plot1 = base + geom_bar(fill = "gray", 
+                        stat = 'identity')
+plot2 = plot1 + labs(title="WA School Locations 2018",
+                     x ="Locations",
+                     y = "Share of Total Schools (in %)", 
+                     caption = sourceText)
+plot2 
+```
+```{r}
+plot3 = plot2 + geom_hline(yintercept = 25, #where
+                           linetype="dashed", 
+                           size=1.5, #thickness
+                           alpha=0.5) #transparency
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

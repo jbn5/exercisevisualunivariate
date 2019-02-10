@@ -1,0 +1,121 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+# how many unique values
+length(unique(eduwa$Reduced.Lunch))
+```
+
+```{r}
+barplot(table(eduwa$Reduced.Lunch),las=2,cex.names = 0.3,
+        main='bad idea')
+```
+```{r}
+# median close to mean?
+# median and mean far from max or min?
+# q1 distance to min is similar ti q3 distance to max?
+# how many missing?
+
+summary(eduwa$Reduced.Lunch)
+```
+```{r}
+eduwa3=eduwa[complete.cases(eduwa$Reduced.Lunch),]
+dataHist=hist(eduwa3$Reduced.Lunch) #saving info in dataHist
+```
+```{r}
+base= ggplot(eduwa3,aes(x = Reduced.Lunch))  
+h1= base + geom_histogram()
+h1 
+```
+```{r}
+dataHist
+
+```
+```{r}
+ggplot_build(h1)$data[[1]]
+```
+```{r}
+#ggplot
+base= ggplot(eduwa3,aes(x = Reduced.Lunch))  
+h1= base + geom_histogram(binwidth = 20,boundary=0) #changing width
+h1= h1 + stat_bin(binwidth = 20, aes(label=..count..), 
+                  geom = "text",boundary = 0,vjust=-0.5)
+h1
+```
+```{r}
+hist(eduwa3$Reduced.Lunch,labels = T,xlab="Reduced Lunch")
+```
+```{r}
+hist(eduwa3$Reduced.Lunch,labels = T,xlab="Reduced Lunch", xaxt="n") 
+axis(side=1, at=dataHist$breaks) # showing axis labels better
+```
+```{r}
+eduwa3$redLunchOrd=cut(eduwa3$Reduced.Lunch,
+                       breaks = dataHist$breaks,
+                       include.lowest = T,
+                       ordered_result = T)
+```
+
+```{r}
+# no need to show count of NAs:
+freq(eduwa3$redLunchOrd,style = 'rmarkdown',report.nas = F)
+```
+```{r}
+length(unique(eduwa$Free.Lunch))
+```
+
+```{r}
+barplot(table(eduwa$Free.Lunch),las=2,cex.names = 0.3,
+        main='bad idea')
+```
+```{r}
+summary(eduwa$Free.Lunch)
+```
+```{r}
+eduwa3=eduwa[complete.cases(eduwa$Free.Lunch),]
+dataHist=hist(eduwa3$Free.Lunch) #saving info in dataHist
+```
+```{r}
+base= ggplot(eduwa3,aes(x = Free.Lunch))  
+h1= base + geom_histogram()
+h1 
+```
+```{r}
+dataHist
+```
+```{r}
+ggplot_build(h1)$data[[1]]
+```
+```{r}
+#ggplot
+base= ggplot(eduwa3,aes(x = Free.Lunch))  
+h1= base + geom_histogram(binwidth = 100,boundary=0) #changing width
+h1= h1 + stat_bin(binwidth = 100, aes(label=..count..), 
+                  geom = "text",boundary = 0,vjust=-0.5)
+h2 = h1 + labs(x="Free Lunch", y = "Frequency", title = "Free Lunch Distribution Frequency in WA Schools")
+h2
+```
+```{r}
+# base
+hist(eduwa3$Free.Lunch,labels = T,xlab="Free Lunch")
+```
+```{r}
+hist(eduwa3$Free.Lunch,labels = T, xlab="Free Lunches Distributed Per School", xaxt="n", main = "Free Lunch Distribution Frequency in WA Schools", ylab = "Number of Schools", ylim = c(0,1000), xlim = c(0,800)) 
+axis(side=1, at=dataHist$breaks) # showing axis labels better
+```
+```{r}
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
